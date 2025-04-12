@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: helsinki-weather
-        image: iumi/helsinki-weather:0.0.4
+        image: iumi/helsinki-weather:0.0.5
         tty: true
         ports:
         - containerPort: 8080

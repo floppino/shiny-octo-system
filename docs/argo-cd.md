@@ -1,4 +1,5 @@
-# Notes for the Certified ArgoCD Project Associate
+# Argo CD
+Notes for the Certified Argo Project Associate (CAPA).
 
 ## Continuous Delivery
 Continuous Delivery (CD) is an organization's __technological__ and cultural __transformation__.

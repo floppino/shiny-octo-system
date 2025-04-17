@@ -15,6 +15,55 @@ Trained memory on the configuration files syntax using ChatGPT (giving it the Of
 - Argo Rollouts: https://argo-rollouts.readthedocs.io/en/stable/
 - Argo Events: https://argoproj.github.io/argo-events/
 
+### Miscellanea
+Based on avery tool, know generic theory of the main components and core concepts of that tool. For example:
+- Argo CD: 
+  - Application is the collection of Kubernetes resources that represent your application. It is represented by an Application CRD in Argo CD and commits to a Git repository.
+  - Application source type is the tool used to manage the application like Helm or Kustomize
+  - Target state is the desired state of the application that is defined in the Git repository
+  - Live state is the actual state of the application in the Kubernetes cluster
+  - Sync is the action to applying the target state to the live state
+  - Sync status indicates whether the target state and live state are in sync
+  - Sync operation status indicates the status of the last sync operation
+  - Refresh is the action of comparing the live state with the target state
+  - Sync wave
+  - Resource hook
+  - Project
+  - ApplicationSet
+  - Generator
+- Argo Wokrflows
+  - Entrypoint
+  - Template
+  - Container is a task that runs a container. This is useful when you want to run a task that is already containerized.
+  - Script is a task that gives you a bit of flexibility to run a script inside a container. This is useful when you need to run a script but don’t want to create a separate container image.
+  - Resource is a task that allows you to perform operations on cluster resources. This can be used to get, create, apply, delete, replace, or patch resources. This is useful when you need to interact with Kubernetes resources.
+  - Suspend is a task that allows you to pause the workflow until it is manually resumed. This is useful when you need to wait for a manual approval or intervention.
+  - Plugin is a task that allows you to run an external plugin. This is useful when you need to run a task that is not supported by the built-in templates.
+  - Containerset is a task that allows you to run multiple containers within a single pod. This is useful when you need to run multiple containers that share the same network namespace, IPC namespace, and PID namespace.
+  - Http is a task that allows you to make HTTP requests. This is useful when you need to interact with external services.
+  - Step
+  - DAGs
+  - Artifact
+  - WorkflowTemplate
+  - activeDeadlineSeconds
+  - arguments
+  - metrics
+  - retryStrategy
+  - synchronization
+  - templateDefaults
+  - workflowTemplateRef
+- Argo Rollouts
+  - Rollout resource
+  - Rollout strategies: Canary, Blue/Green
+  - Analysis Template
+  - AnalysisRun
+- Argo Events
+  - Event Source is the external system that generates events.
+  - Sensor listens to event sources and triggers actions to respond to those events.
+  - EventBus is backbone for managing delivery of events from event sources to sensors
+  - Trigger responds to events by performing actions such as starting workflows, creating Kubernetes resources, or sending notifications.
+  - Filters
+  - Expression
 ---
 ---
 
@@ -33,6 +82,19 @@ Argo CD can override values in the values.yaml parameters using argocd app set c
 argocd app set helm-guestbook -p service.type=LoadBalancer
 ```
 
+---
+How does the parameter `ignoreDifferences` work? [Doc link](https://argo-cd.readthedocs.io/en/stable/user-guide/diffing/#application-level-configuration).
+```yaml
+spec:
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    name: guestbook
+    namespace: default
+    jsonPointers:
+    - /spec/replicas
+```
+Ignore can be narrowed to a resource with the specified name and optional namespace, or with a `jqPathExpressions` field or a `managedFieldsManagers` field.
 ---
 
 If unspecified, an application belongs to the default project, which is created automatically and by default, permits deployments from any source repo, to any cluster, and all resource Kinds. For example:
@@ -203,7 +265,7 @@ spec:
             artifactGC:
               strategy: Never   # optional override for an Artifact
 ```
-The `artifactGC` at artifact level will override the global one and will persist the artifact `keep-this`.
+The `artifactGC` at artifact level will override the global one and will persist the artifact `keep-this`. Otherwise the upper level artifactGC will destroy everything at workflow deletion.
 
 ---
 How to deploy every pod to different nodes:
